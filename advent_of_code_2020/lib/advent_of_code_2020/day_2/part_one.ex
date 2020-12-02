@@ -15,6 +15,7 @@ defmodule AdventOfCode2020.Day2.PartOne do
 
   How many passwords are valid according to their policies?
   """
+
   @type file_path :: String.t()
 
   @spec find(file_path) :: integer
