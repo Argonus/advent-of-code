@@ -1,4 +1,4 @@
-defmodule AdventOfCode2020.Day1.PartOne do
+defmodule AdventOfCode2020.Day1.Solution do
   @moduledoc """
   --- Day 1: Report Repair ---
   After saving Christmas five years in a row, you've decided to take a vacation at a nice resort on a tropical island. Surely, Christmas will go on without you.
@@ -10,39 +10,58 @@ defmodule AdventOfCode2020.Day1.PartOne do
   Collect stars by solving puzzles. Two puzzles will be made available on each day in the Advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!
 
   Before you leave, the Elves in accounting just need you to fix your expense report (your puzzle input); apparently, something isn't quite adding up.
-
-  Specifically, they need you to find the two entries that sum to 2020 and then multiply those two numbers together.
   """
-  import AdventOfCode2020.Day1.FileHelpers
+  import AdventOfCode2020.Day1.Combinations
 
   @year 2020
 
   @type file_path :: String.t()
-  @type result :: {integer, {integer, integer}}
 
-  @spec find(String.t()) :: {:ok, [result]} | {:error, :not_found}
-  def find(file_path) do
+  @spec part_one(file_path) :: integer
+  def part_one(file_path) do
     file_path
-    |> parse_file()
-    |> find_pair([])
-    |> parse_result()
+    |> File.stream!()
+    |> Stream.map(&to_integer/1)
+    |> Enum.into(%{}, &({&1, true}))
+    |> find_pair()
+  catch
+    {el1, el2} -> el1 * el2
   end
 
-  defp find_pair([], acc), do: acc
-
-  defp find_pair([head | tail], acc) do
-    results = Enum.filter(tail, &(head + &1 == @year)) |> Enum.map(&{head, &1})
-    find_pair(tail, acc ++ results)
+  defp to_integer(string) do
+    string
+    |> String.trim()
+    |> String.to_integer()
   end
 
-  defp parse_result([]), do: {:error, :not_found}
+  defp find_pair(values_map) do
+    Enum.each(values_map, fn {value, true} ->
+      lookup_elem = @year - value
+      if Map.get(values_map, lookup_elem), do: throw({value, lookup_elem}), else: nil
+    end)
+  end
 
-  defp parse_result(results) do
-    results =
-      Enum.map(results, fn set = {el1, el2} ->
-        {el1 * el2, set}
-      end)
+  @combine_number 3
 
-    {:ok, results}
+  @spec part_two(file_path) :: integer
+  def part_two(file_path) do
+    file_path
+    |> File.stream!()
+    |> Stream.map(&to_integer/1)
+    |> Enum.to_list()
+    |> combine(@combine_number)
+    |> find_trio()
+  catch
+    {el1, el2, el3} -> el1 * el2 * el3
+  end
+
+  defp find_trio([head | tail]) do
+    [el1, el2, el3] = head
+
+    if el1 + el2 + el3 == @year do
+      throw({el1, el2, el3})
+    else
+      find_trio(tail)
+    end
   end
 end

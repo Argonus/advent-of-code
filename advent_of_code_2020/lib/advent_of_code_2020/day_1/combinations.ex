@@ -1,4 +1,4 @@
-defmodule AdventOfCode2020.Day1.ListHelpers do
+defmodule AdventOfCode2020.Day1.Combinations do
   @moduledoc false
 
   @spec combine(list, integer) :: [list]
