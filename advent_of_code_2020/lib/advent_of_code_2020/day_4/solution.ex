@@ -66,6 +66,8 @@ defmodule AdventOfCode2020.Day4.Solution do
     end
   end
 
+  defp valid_field?([key | _]) when key in @optional_attribute, do: true
+
   defp valid_field?(["byr", value | _]) do
     int_value = String.to_integer(value)
     int_value >= 1920 && int_value <= 2002
@@ -110,6 +112,5 @@ defmodule AdventOfCode2020.Day4.Solution do
     String.match?(value, ~r/^[0-9]{9}$/)
   end
 
-  defp valid_field?(["cid" | _]), do: true
   defp valid_field?(_), do: false
 end
