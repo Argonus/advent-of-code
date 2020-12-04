@@ -22,7 +22,7 @@ defmodule AdventOfCode2020.Day1.Solution do
     file_path
     |> File.stream!()
     |> Stream.map(&to_integer/1)
-    |> Enum.into(%{}, &({&1, true}))
+    |> Enum.into(%{}, &{&1, true})
     |> find_pair()
   catch
     {el1, el2} -> el1 * el2
