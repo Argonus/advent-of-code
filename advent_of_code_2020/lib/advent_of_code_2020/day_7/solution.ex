@@ -27,12 +27,15 @@ defmodule AdventOfCode2020.Day7.Solution do
   def part_one(file_path) do
     file_path
     |> File.stream!()
-    |> Stream.map(&String.trim(&1))
-    |> Stream.map(&Regex.run(@line_regexp, &1, capture: :all_but_first))
+    |> Stream.map(&parse_data_line/1)
     |> Stream.map(&parse_children/1)
     |> Enum.reduce(%{}, &build_children_parent_map/2)
     |> count_bags_containing([@bag_color], MapSet.new([]))
     |> MapSet.size()
+  end
+
+  defp parse_data_line(line) do
+    Regex.run(@line_regexp, String.trim(line), capture: :all_but_first)
   end
 
   @bag_regexp ~r{(\w+ \w+) bag}
@@ -75,8 +78,7 @@ defmodule AdventOfCode2020.Day7.Solution do
   def part_two(file_path) do
     file_path
     |> File.stream!()
-    |> Stream.map(&String.trim(&1))
-    |> Stream.map(&Regex.run(@line_regexp, &1, capture: :all_but_first))
+    |> Stream.map(&parse_data_line/1)
     |> Enum.reduce(%{}, &parse_children_and_count/2)
     |> count_needed_bags([{@bag_color, 1}], 0)
   end
