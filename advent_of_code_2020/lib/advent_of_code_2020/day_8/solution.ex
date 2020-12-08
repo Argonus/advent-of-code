@@ -97,26 +97,26 @@ defmodule AdventOfCode2020.Day8.Solution do
   @spec part_two(file_path) :: integer
   def part_two(file_path) do
     data = file_to_map(file_path)
-    brute_force_check({data, data}, nil)
+    brute_force_check(data, nil)
   end
 
-  defp brute_force_check({data_to_check, data}, index_to_change) do
+  defp brute_force_check(data, index_to_change) do
+    data_to_check = transform_data(data, index_to_change)
+
     case do_check_without_loop(data_to_check, %State{}) do
       {:ok, acc} ->
         acc
 
       {:error, _} ->
-        new_data = transform_data(data, index_to_change)
         new_index = if is_nil(index_to_change), do: 0, else: index_to_change + 1
-        brute_force_check({new_data, data}, new_index)
+        brute_force_check(data, new_index)
     end
   end
 
   defp transform_data(data, nil), do: data
 
   defp transform_data(data, index_to_change) do
-    new_value = Map.fetch!(data, index_to_change) |> new_value()
-    Map.put(data, index_to_change, new_value)
+    Map.update!(data, index_to_change, &new_value/1)
   end
 
   defp new_value(["jmp", value]), do: ["nop", value]
@@ -129,7 +129,8 @@ defmodule AdventOfCode2020.Day8.Solution do
         {:error, state}
 
       index < map_size(data) - 1 ->
-        do_check_without_loop(data, new_state(data, state))
+        new_state = new_state(data, state)
+        do_check_without_loop(data, new_state)
 
       true ->
         {:ok, acc}
