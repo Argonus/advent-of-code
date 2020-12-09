@@ -49,7 +49,7 @@ defmodule AdventOfCode2020.Day9.Solution do
   defp check_elem_is_valid(elem, acc) when length(acc) < @preamble, do: {:preamble, [elem | acc]}
 
   defp check_elem_is_valid(elem, acc) do
-    if Enum.any?(combine(2, acc), &(Enum.sum(&1) == elem)) do
+    if is_summing_number_present?(acc, elem) do
       {_, list} = List.pop_at(acc, -1)
       {:ok, [elem | list]}
     else
@@ -57,11 +57,15 @@ defmodule AdventOfCode2020.Day9.Solution do
     end
   end
 
-  defp combine(0, _), do: [[]]
-  defp combine(_, []), do: []
+  defp is_summing_number_present?([], _), do: false
+  defp is_summing_number_present?([head | tail], elem) do
+    look_for = elem - head
 
-  defp combine(m, [h | t]) do
-    for(l <- combine(m - 1, t), do: [h | l]) ++ combine(m, t)
+    if Enum.any?(tail, &(&1 == look_for)) do
+      true
+    else
+      is_summing_number_present?(tail, elem)
+    end
   end
 
   @doc """
