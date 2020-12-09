@@ -32,21 +32,21 @@ defmodule AdventOfCode2020.Day9.Solution do
     file_path
     |> File.stream!()
     |> Stream.map(&parse_line/1)
-    |> Stream.transform([], fn elem, acc ->
-      case check_elem_is_valid(elem, acc) do
-        {:preamble, new_acc} -> {[elem], new_acc}
-        {:ok, new_acc} -> {[elem], new_acc}
-        {:error, elem} -> throw(elem)
-      end
-    end)
-    |> Stream.run()
+    |> Enum.reduce([], &find_invalid_elem/2)
   catch
     elem -> elem
   end
 
   defp parse_line(line), do: line |> String.trim() |> String.to_integer()
 
-  defp check_elem_is_valid(elem, acc) when length(acc) < @preamble, do: {:preamble, [elem | acc]}
+  defp find_invalid_elem(elem, acc) do
+    case check_elem_is_valid(elem, acc) do
+      {:ok, new_acc} -> new_acc
+      {:error, elem} -> throw(elem)
+    end
+  end
+
+  defp check_elem_is_valid(elem, acc) when length(acc) < @preamble, do: {:ok, [elem | acc]}
 
   defp check_elem_is_valid(elem, acc) do
     if is_summing_number_present?(acc, elem) do
@@ -58,14 +58,10 @@ defmodule AdventOfCode2020.Day9.Solution do
   end
 
   defp is_summing_number_present?([], _), do: false
+
   defp is_summing_number_present?([head | tail], elem) do
     look_for = elem - head
-
-    if Enum.any?(tail, &(&1 == look_for)) do
-      true
-    else
-      is_summing_number_present?(tail, elem)
-    end
+    if Enum.member?(tail, look_for), do: true, else: is_summing_number_present?(tail, elem)
   end
 
   @doc """
