@@ -76,6 +76,7 @@ defmodule AdventOfCode2020.Day9.Solution do
   @spec part_two(file_path) :: integer
   def part_two(file_path) do
     target = part_one(file_path)
+    # This can be rebuild to use lazy processing
     list_of_numbers = file_path |> File.stream!() |> Stream.map(&parse_line/1) |> Enum.to_list()
 
     find_contiguous_numbers(target, list_of_numbers)
