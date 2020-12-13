@@ -33,6 +33,8 @@ defmodule AdventOfCode2020.Day10.Solution do
   """
 
   @type file_path :: String.t()
+  @outlet_jolts 0
+  @device_jolts_diff 3
 
   @doc """
   Find a chain that uses all of your adapters to connect the charging outlet to your device's built-in adapter and count the joltage differences between the charging outlet, the adapters, and your device. What is the number of 1-jolt differences multiplied by the number of 3-jolt differences?
@@ -64,10 +66,10 @@ defmodule AdventOfCode2020.Day10.Solution do
 
   defp parse_line(line), do: line |> String.trim() |> String.to_integer()
 
-  defp add_outlet(adapter_jolts), do: [0 | adapter_jolts]
+  defp add_outlet(adapter_jolts), do: [@outlet_jolts | adapter_jolts]
 
   defp add_device(adapter_jolts) do
-    device = Enum.max(adapter_jolts) + 3
+    device = Enum.max(adapter_jolts) + @device_jolts_diff
     adapter_jolts ++ [device]
   end
 
@@ -109,22 +111,23 @@ defmodule AdventOfCode2020.Day10.Solution do
   """
   @spec part_two(file_path) :: integer
   def part_two(file_path) do
-    accumulator = %{0 => 1}
-
     file_path
     |> build_adapter_jolts_list()
-    |> Enum.reduce(accumulator, &calculate_combinations/2)
+    |> Enum.reduce(%{}, &calculate_combinations/2)
     |> Map.values()
     |> Enum.max()
   end
 
-  defp calculate_combinations(0, accumulator), do: accumulator
+  defp calculate_combinations(@outlet_jolts, accumulator),
+    do: Map.put(accumulator, @outlet_jolts, 1)
 
-  defp calculate_combinations(adapter, accumulator) do
-    adapter_1 = Map.get(accumulator, adapter - 1, 0)
-    adapter_2 = Map.get(accumulator, adapter - 2, 0)
-    adapter_3 = Map.get(accumulator, adapter - 3, 0)
+  defp calculate_combinations(adapter_jolts, accumulator) do
+    adapter_jolts_1 = Map.get(accumulator, adapter_jolts - 1, 0)
+    adapter_jolts_2 = Map.get(accumulator, adapter_jolts - 2, 0)
+    adapter_jolts_3 = Map.get(accumulator, adapter_jolts - 3, 0)
 
-    Map.put(accumulator, adapter, adapter_1 + adapter_2 + adapter_3)
+    adapter_jolts_combinations = adapter_jolts_1 + adapter_jolts_2 + adapter_jolts_3
+
+    Map.put(accumulator, adapter_jolts, adapter_jolts_combinations)
   end
 end
