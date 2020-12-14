@@ -75,8 +75,8 @@ defmodule AdventOfCode2020.Day13.Solution do
   defp find_earliest_available(%{buses: buses, timestamp: timestamp}) do
     buses
     |> Enum.map(fn bus_id ->
-      time = Float.ceil(timestamp * 1.0 / bus_id) * bus_id
-      %{depart_time: time, bus_id: bus_id}
+      depart_time = Float.ceil(timestamp * 1.0 / bus_id) * bus_id
+      %{depart_time: depart_time, bus_id: bus_id}
     end)
     |> Enum.min_by(fn %{depart_time: depart_time} -> depart_time end)
     |> Map.put(:timestamp, timestamp)
@@ -164,14 +164,14 @@ defmodule AdventOfCode2020.Day13.Solution do
     buses
     |> String.split(",", trim: true)
     |> Stream.with_index()
-    |> Stream.reject(fn {bus_id, _md} ->
-      bus_id == @out_of_service
-    end)
+    |> Stream.reject(&bus_out_of_service?/1)
     |> Stream.map(fn {bus_id, index} ->
       {String.to_integer(bus_id), index}
     end)
-    |> Enum.to_list()
   end
+
+  defp bus_out_of_service?({"x", _}), do: true
+  defp bus_out_of_service?(_), do: false
 
   defp find_first_time({bus_id, index}, {time, step}) do
     if rem(time + index, bus_id) == 0 do
