@@ -95,13 +95,13 @@ defmodule AdventOfCode2020.Day14.Solution do
 
   defp process_chunk_part_one({mask, data}, acc) do
     Enum.reduce(data, acc, fn {idx, value}, acc2 ->
-      bit_value = data_to_bit(value)
+      bit_value = data_to_bits(value)
       memory_value = memory_value(mask, bit_value)
       Map.put(acc2, idx, memory_value)
     end)
   end
 
-  defp data_to_bit(value) do
+  defp data_to_bits(value) do
     value
     |> Integer.to_string(2)
     |> String.pad_leading(36, "0")
@@ -186,7 +186,7 @@ defmodule AdventOfCode2020.Day14.Solution do
 
   defp process_chunk_part_two({mask_value, data}, acc) do
     Enum.reduce(data, acc, fn {idx, value}, acc2 ->
-      bit_idx = data_to_bit(idx)
+      bit_idx = data_to_bits(idx)
 
       mask_value
       |> memory_values(bit_idx)
