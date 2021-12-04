@@ -7,21 +7,21 @@ defmodule Day04Test do
 
   describe "part_one/1" do
     test "returns example result" do
-      assert 0 == Day04.part_one(@example_path)
+      assert 4512 == Day04.part_one(@example_path)
     end
 
     test "returns input result" do
-      assert 0 == Day04.part_one(@input_path)
+      assert 58_838 == Day04.part_one(@input_path)
     end
   end
 
   describe "part_two/1" do
     test "returns example result" do
-      assert 0 == Day04.part_two(@example_path)
+      assert 1924 == Day04.part_two(@example_path)
     end
 
     test "returns input result" do
-      assert 0 == Day04.part_two(@input_path)
+      assert 6256 == Day04.part_two(@input_path)
     end
   end
 end
