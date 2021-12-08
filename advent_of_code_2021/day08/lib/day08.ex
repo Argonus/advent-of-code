@@ -175,6 +175,7 @@ defmodule Day08 do
     |> parse_input()
     |> Stream.map(&parse_line_part_two/1)
     |> Stream.map(&find_mapping/1)
+    |> Stream.map(&decode_value/1)
     |> Enum.sum()
   end
 
@@ -207,8 +208,7 @@ defmodule Day08 do
     five = Enum.find(two_or_five, &MapSet.subset?(&1, nine))
     [two] = List.delete(two_or_five, five)
 
-    # decode output
-    patterns = %{
+    pattern = %{
       zero => "0",
       one => "1",
       two => "2",
@@ -221,9 +221,13 @@ defmodule Day08 do
       nine => "9"
     }
 
+    {pattern, output}
+  end
+
+  defp decode_value({pattern, output}) do
     output
     |> Enum.map(&to_mapset/1)
-    |> Enum.map_join(&find_value(&1, patterns))
+    |> Enum.map_join(&find_value(&1, pattern))
     |> String.to_integer()
   end
 
