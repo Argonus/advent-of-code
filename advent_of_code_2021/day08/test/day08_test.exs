@@ -6,21 +6,21 @@ defmodule Day08Test do
 
   describe "part_one/1" do
     test "returns example result" do
-      assert 0 == Day08.part_one(@example_path)
+      assert 26 == Day08.part_one(@example_path)
     end
 
     test "returns input result" do
-      assert 0 == Day08.part_one(@input_path)
+      assert 383 == Day08.part_one(@input_path)
     end
   end
 
   describe "part_two/1" do
     test "returns example result" do
-      assert 0 == Day08.part_two(@example_path)
+      assert 61_229 == Day08.part_two(@example_path)
     end
 
     test "returns input result" do
-      assert 0 == Day08.part_two(@input_path)
+      assert 998_900 == Day08.part_two(@input_path)
     end
   end
 end
