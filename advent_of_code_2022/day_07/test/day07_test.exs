@@ -1,4 +1,4 @@
-defmodule Day05Test do
+defmodule Day07Test do
   use ExUnit.Case, async: true
 
   @example_path Path.expand("./fixtures/example.txt", __DIR__)
@@ -6,21 +6,21 @@ defmodule Day05Test do
 
   describe "part_one/1" do
     test "example input" do
-      assert "CMZ" == Day05.part_one(@example_path)
+      assert 95_437 == Day07.part_one(@example_path)
     end
 
     test "personal input" do
-      assert "QNHWJVJZW" == Day05.part_one(@input_path)
+      assert 1_423_358 == Day07.part_one(@input_path)
     end
   end
 
   describe "part_two/1" do
     test "example input" do
-      assert "MCD" == Day05.part_two(@example_path)
+      assert 24_933_642 == Day07.part_two(@example_path)
     end
 
     test "personal input" do
-      assert "BPCZJLFJW" == Day05.part_two(@input_path)
+      assert 545_729 == Day07.part_two(@input_path)
     end
   end
 end
