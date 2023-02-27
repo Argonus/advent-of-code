@@ -24,16 +24,21 @@ defmodule Day09 do
 
   @spec part_two(String.t()) :: integer
   def part_two(file_path) do
+    accumulator = %Accumulator{rope: [{0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}, {0,0}]}
+
     file_path
     |> parse_file()
+    |> Enum.reduce(accumulator, &move_rope/2)
+    |> tail_history()
   end
 
   ### Rope movements
   def move_rope({dir, steps}, accumulator) do
-    Enum.reduce(1..steps, accumulator, fn _, %Accumulator{rope: [head_pos, tail_pos], history: history} ->
-      {new_head, new_tail} = dir |> move_head(head_pos) |> move_tail(tail_pos)
+    Enum.reduce(1..steps, accumulator, fn _, %Accumulator{rope: [head_pos | tail], history: history} ->
+      new_head = move_head(dir, head_pos)
+      new_tail = Enum.scan(tail, new_head, &move_tail(&2, &1))
 
-      %Accumulator{rope: [new_head, new_tail], history: MapSet.put(history, new_tail)}
+      %Accumulator{rope: [new_head | new_tail], history: MapSet.put(history, List.last(new_tail))}
     end)
   end
 
@@ -45,7 +50,7 @@ defmodule Day09 do
   defp move_tail(head_pos, {x_tail, y_tail} = tail_pos) do
     cond do
       adjacent?(head_pos, tail_pos) ->
-        {head_pos, tail_pos}
+        tail_pos
 
       same_y_pos?(head_pos, tail_pos) ->
         possible_tail_pos = [
@@ -53,7 +58,7 @@ defmodule Day09 do
           {x_tail - 1, y_tail}
         ]
 
-        {head_pos, valid_tail_pos(head_pos, possible_tail_pos)}
+        valid_tail_pos(head_pos, possible_tail_pos)
 
       same_x_pos?(head_pos, tail_pos) ->
         possible_tail_pos = [
@@ -61,7 +66,7 @@ defmodule Day09 do
           {x_tail, y_tail - 1}
         ]
 
-        {head_pos, valid_tail_pos(head_pos, possible_tail_pos)}
+        valid_tail_pos(head_pos, possible_tail_pos)
 
       true ->
         possible_tail_pos = [
@@ -71,7 +76,7 @@ defmodule Day09 do
           {x_tail - 1, y_tail - 1}
         ]
 
-        {head_pos, valid_tail_pos(head_pos, possible_tail_pos)}
+        valid_tail_pos(head_pos, possible_tail_pos)
     end
   end
 

@@ -25,7 +25,7 @@ defmodule Day09Test do
     end
 
     test "personal input" do
-      assert 480_000 == Day09.part_two(@input_path)
+      assert 2765 == Day09.part_two(@input_path)
     end
   end
 end
