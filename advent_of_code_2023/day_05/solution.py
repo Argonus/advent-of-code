@@ -11,13 +11,15 @@ class Solution:
     def run_part_one(self):
         seeds_one = map(int, self.seeds_data[0].split(": ")[1].split(" "))
         return self.apply_transforms(seeds_one,[])
+
     def run_part_two(self):
         ranges = []
         results = []
         seeds_list = self.seeds_data[0].split(": ")[1].split(" ")
         seeds_chunks = self.chunk(seeds_list, 2)
         [ranges.append(range(int(s), int(s) + int(r))) for s, r in seeds_chunks]
-        [results.append(self.apply_transforms(r, [])) for r in ranges]
+        [results.append(self.apply_range_transforms(r)) for r in ranges]
+
         return self.flatten(results)
 
 
@@ -31,6 +33,24 @@ class Solution:
             acc.append(seed)
 
         return acc
+
+    def apply_range_transforms(self, seed_range):
+        for map in self.maps:
+            for dest, src, rng in map:
+                s = []
+                src_end = src + rng
+                before = (seed_range.start(), min(seed_range.end(), src))
+                inter = (max(seed_range.start(), src), min(src_end, seed_range.end()))
+                after = (max(src_end, seed_range.start()), seed_range.end())
+
+                if before[1] > before[0]:
+                    s.append(before)
+                if inter[1] > inter[0]:
+                    s.append((inter[0]-src+dest, inter[1]-src+dest))
+                if after[1] > after[0]:
+                    s.append(after)
+
+        return s
 
     def build_maps(self, maps_data):
         init_maps = []
